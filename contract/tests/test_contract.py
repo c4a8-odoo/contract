@@ -2415,3 +2415,11 @@ class TestContract(TestContractBase):
         self.acct_line.uom_id = uom_day.id
         self.acct_line.refresh()
         self.assertEqual(self.acct_line.price_unit, 30.75 * 8)
+
+    def test_contract_line_termination(self):
+        """Don't fail when the line receives an end date."""
+        self.contract.recurring_create_invoice()
+        self.acct_line.date_end = "2018-02-14"
+        self.assertFalse(self.acct_line.recurring_next_date)
+        # This doesn't give any error
+        self.contract.recurring_create_invoice()
